@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ResultsController">
+    <TableView fx:id="resultsTable" prefHeight="600.0" prefWidth="400.0">
+      <columns>
+          <TableColumn fx:id="colPoster" prefWidth="200.0" text="Poster"/>
+          <TableColumn fx:id="colInfo" minWidth="0.0" prefWidth="200.0" text="Info"/>
+      </columns>
+    </TableView>
+</VBox>

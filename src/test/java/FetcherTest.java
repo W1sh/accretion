@@ -1,4 +1,5 @@
 import data.Movie;
+import data.Result;
 import data.Status;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ class FetcherTest {
 
     @Test
     void fetchMultipleMovies() {
-        List<String> json = Fetcher.fetchMovies("Godfather");
-        System.out.println(json);
+        List<Result> results = Fetcher.fetchMovies("Godfather");
+        results.forEach(System.out::println);
     }
 }

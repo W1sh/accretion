@@ -1,5 +1,6 @@
 import com.google.gson.*;
 import data.Movie;
+import data.Result;
 import data.Status;
 
 import java.io.*;
@@ -29,20 +30,18 @@ public class Fetcher {
         }
     }
 
-    public static List<String> fetchMovies(String filter) {
-        String json = fetchJsonFromURL(MULTIPLE_FETCH_OMDB + URLEncoder.encode(filter, StandardCharsets.UTF_8));
+    public static List<Result> fetchMovies(String filter) {
+        String json = fetchJsonFromURL(MULTIPLE_FETCH_OMDB + URLEncoder.encode(
+                filter, StandardCharsets.UTF_8));
         JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
         JsonArray jsonArray = jsonObject.get("Search").getAsJsonArray();
 
-        String title;
-        int year;
-        ArrayList<String> movies = new ArrayList<>();
+        ArrayList<Result> results = new ArrayList<>();
         for (JsonElement element : jsonArray) {
-            title = element.getAsJsonObject().get("Title").getAsString();
-            year = element.getAsJsonObject().get("Year").getAsInt();
-            movies.add(title + ", " + year);
+            Result result = new Gson().fromJson(element.getAsJsonObject(), Result.class);
+            results.add(result);
         }
-        return movies;
+        return results;
     }
 
     private static String fetchAPIKey() {

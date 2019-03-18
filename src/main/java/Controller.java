@@ -1,20 +1,29 @@
 import data.Movie;
+import data.Result;
 import data.Status;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -38,12 +47,6 @@ public class Controller implements Initializable {
     @FXML private TableColumn<Movie, String> colProduction;
     @FXML private TableColumn<Movie, String> colRuntime;
     @FXML private TableColumn<Movie, String> colRating;
-
-
-    @FXML private MenuItem addNewAnimeItem;
-    @FXML private MenuItem addNewShowItem;
-    @FXML private MenuItem addNewMangaItem;
-    @FXML private MenuItem addNewBookItem;
 
     @FXML private TextField searchTextField;
 
@@ -82,11 +85,27 @@ public class Controller implements Initializable {
     void fetchPressed(KeyEvent event) {
         if(event.getCode().equals(KeyCode.ENTER)){
             enterPressed.set(true);
-            Movie movie = Fetcher.fetchMovie(searchTextField.getText());
+            Parent root;
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/results.fxml"));
+                root = fxmlLoader.load();
+                ResultsController rc = fxmlLoader.getController();
+                Stage stage = new Stage();
+                stage.setOnCloseRequest(closeEvent -> Platform.exit());
+                stage.setOnShowing(showEvent -> {
+                    ArrayList<Result> results = (ArrayList<Result>)Fetcher.fetchMovies(searchTextField.getText());
+                    rc.setResults(results);
+                });
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            /*Movie movie = Fetcher.fetchMovie(searchTextField.getText());
             if(movie != null){
                 movies.add(movie);
                 updateTable();
-            }
+            }*/
         }
     }
 
