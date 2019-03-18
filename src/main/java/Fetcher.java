@@ -2,9 +2,7 @@ import com.google.gson.*;
 import data.Movie;
 import data.Status;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -13,13 +11,12 @@ import java.util.List;
 
 public class Fetcher {
 
-    public static final String API_KEY = "&apikey=";
+    public static final String API_TAG = "&apikey=";
     public static final String SINGLE_FETCH_OMDB = "http://www.omdbapi.com/?t=";
     public static final String MULTIPLE_FETCH_OMDB = "http://www.omdbapi.com/?s=";
 
     public static Movie fetchMovie(String name) {
-        String constructedURL = SINGLE_FETCH_OMDB + URLEncoder.encode(name, StandardCharsets.UTF_8) + API_KEY;
-        String json = readUrl(constructedURL);
+        String json = fetchJsonFromURL(SINGLE_FETCH_OMDB + URLEncoder.encode(name, StandardCharsets.UTF_8));
         JsonElement jsonElement = new JsonParser().parse(json);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         if(jsonObject.get("Error") == null){
@@ -33,8 +30,7 @@ public class Fetcher {
     }
 
     public static List<String> fetchMovies(String filter) {
-        String constructedURL = MULTIPLE_FETCH_OMDB + filter + API_KEY;
-        String json = readUrl(constructedURL);
+        String json = fetchJsonFromURL(MULTIPLE_FETCH_OMDB + URLEncoder.encode(filter, StandardCharsets.UTF_8));
         JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
         JsonArray jsonArray = jsonObject.get("Search").getAsJsonArray();
 
@@ -49,10 +45,23 @@ public class Fetcher {
         return movies;
     }
 
-    public static String readUrl(String urlString) {
+    private static String fetchAPIKey() {
+        try {
+            JsonElement json = new Gson().fromJson(new FileReader(
+                    "/home/bruno/IdeaProjects/accretion/config.json"), JsonElement.class);
+            return json.getAsJsonObject().get("API_KEY").getAsString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private static String fetchJsonFromURL(String encodedURLWithQuery){
+        final String API_KEY = fetchAPIKey();
+        String constructedURL = encodedURLWithQuery + API_TAG + API_KEY;
         BufferedReader reader;
         try {
-            URL url = new URL(urlString);
+            URL url = new URL(constructedURL);
             reader = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder buffer = new StringBuilder();
             int read;
