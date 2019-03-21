@@ -21,14 +21,6 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <Menu mnemonicParsing="false" text="Add new entry..">
-                            <items>
-                                <MenuItem fx:id="addNewAnimeItem" mnemonicParsing="false" text="Add new anime" />
-                                <MenuItem fx:id="addNewShowItem" mnemonicParsing="false" text="Add new show" />
-                                <MenuItem fx:id="addNewMangaItem" mnemonicParsing="false" text="Add new manga" />
-                                <MenuItem fx:id="addNewBookItem" mnemonicParsing="false" text="Add new book" />
-                            </items>
-                        </Menu>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Save" />
                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -37,15 +29,15 @@
                         <MenuItem mnemonicParsing="false" text="Quit" />
                     </items>
                 </Menu>
+            <Menu mnemonicParsing="false" text="View">
+              <items>
+                <MenuItem fx:id="idMenuItemMain" mnemonicParsing="false" onAction="#loadMain" text="Main" />
+                  <MenuItem fx:id="idMenuItemTable" disable="true" mnemonicParsing="false" text="Table" />
+              </items>
+            </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
                         <MenuItem mnemonicParsing="false" text="Undo" />
-                        <MenuItem mnemonicParsing="false" text="Redo" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Cut" />
-                        <MenuItem mnemonicParsing="false" text="Copy" />
-                        <MenuItem mnemonicParsing="false" text="Paste" />
-                        <MenuItem mnemonicParsing="false" text="Delete" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Select All" />
                         <MenuItem mnemonicParsing="false" text="Unselect All" />

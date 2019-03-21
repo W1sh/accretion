@@ -6,6 +6,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -184,6 +185,20 @@ public class Controller implements Initializable {
                 };
             }
         });
+    }
+
+    @FXML
+    void loadMain(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main.fxml"));
+            Parent root = fxmlLoader.load();
+            App.mainViewController = fxmlLoader.getController();
+            Scene scene = new Scene(root);
+            App.window.setScene(scene);
+            App.window.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Movie> getMovies() {

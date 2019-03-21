@@ -9,7 +9,9 @@ import java.io.IOException;
 
 public class App extends Application {
 
+    static MainViewController mainViewController;
     static Controller controller;
+    static Stage window;
 
     public static void main(String[] args) {
         launch(args);
@@ -17,11 +19,11 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Parent root;
+        window = primaryStage;
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/application.fxml"));
-            root = fxmlLoader.load();
-            controller = fxmlLoader.getController();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main.fxml"));
+            Parent root = fxmlLoader.load();
+            mainViewController = fxmlLoader.getController();
             primaryStage.setTitle("Accretion 1.1");
             primaryStage.setOnCloseRequest(event -> Platform.exit());
             primaryStage.setOnShowing(showEvent -> {
@@ -32,9 +34,6 @@ public class App extends Application {
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
-
-
     }
 }
