@@ -9,6 +9,8 @@ import java.io.IOException;
 
 public class App extends Application {
 
+    static Controller controller;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -17,16 +19,22 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         Parent root;
         try {
-            root = FXMLLoader.load(getClass().getResource("/gui/application.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/application.fxml"));
+            root = fxmlLoader.load();
+            controller = fxmlLoader.getController();
+            primaryStage.setTitle("Accretion 1.1");
+            primaryStage.setOnCloseRequest(event -> Platform.exit());
+            primaryStage.setOnShowing(showEvent -> {
+                // prepare table
+            });
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
 
-        primaryStage.setTitle("Accretion 1.1");
-        primaryStage.setOnCloseRequest(event -> Platform.exit());
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+
     }
 }

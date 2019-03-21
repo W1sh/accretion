@@ -3,11 +3,12 @@ package data;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Map;
 
 public class Movie {
 
     @SerializedName("Title") private String title;
-    @SerializedName("Year") private int year;
+    @SerializedName("Year") private String year; // int
     @SerializedName("Runtime") private String runtime;
     @SerializedName("Rated") private String rating;
     @SerializedName("Director") private String director;
@@ -19,19 +20,19 @@ public class Movie {
     @SerializedName("Country") private String country;
     @SerializedName("Awards") private String awards;
     @SerializedName("Production") private String production;
-    @SerializedName("BoxOffice") private String boxOffice;
-    @SerializedName("Metascore") private int metascore;
-    private double imdbRating;
-    private String imdbVotes;
+    @SerializedName("BoxOffice") private String boxOffice; // currency
+    @SerializedName("Metascore") private String metascore; // int
+    private String imdbRating; // double
+    private String imdbVotes; // int
     private String imdbID;
     private Status status;
 
     public Movie() { }
 
-    public Movie(String title, int year, String runtime, String rating, String director, String writers,
-                 String actors, String genres, String plot, String language, String country, String awards,
-                 String production, String boxOffice, int metascore, double imdbRating, String imdbVotes,
-                 String imdbID) {
+    public Movie(String title, String year, String runtime, String rating, String director,
+                 String writers, String actors, String genres, String plot, String language,
+                 String country, String awards, String production, String boxOffice, String metascore,
+                 String imdbRating, String imdbVotes, String imdbID, Status status) {
         this.title = title;
         this.year = year;
         this.runtime = runtime;
@@ -50,6 +51,7 @@ public class Movie {
         this.imdbRating = imdbRating;
         this.imdbVotes = imdbVotes;
         this.imdbID = imdbID;
+        this.status = status;
     }
 
     public String getTitle() {
@@ -60,11 +62,11 @@ public class Movie {
         this.title = title;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
@@ -164,19 +166,19 @@ public class Movie {
         this.boxOffice = boxOffice;
     }
 
-    public int getMetascore() {
+    public String getMetascore() {
         return metascore;
     }
 
-    public void setMetascore(int metascore) {
+    public void setMetascore(String metascore) {
         this.metascore = metascore;
     }
 
-    public double getImdbRating() {
+    public String getImdbRating() {
         return imdbRating;
     }
 
-    public void setImdbRating(double imdbRating) {
+    public void setImdbRating(String imdbRating) {
         this.imdbRating = imdbRating;
     }
 

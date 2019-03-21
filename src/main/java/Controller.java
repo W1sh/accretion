@@ -1,14 +1,11 @@
 import data.Movie;
 import data.Result;
 import data.Status;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,12 +13,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import util.Fetcher;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,6 +25,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
 
@@ -91,9 +91,9 @@ public class Controller implements Initializable {
                 root = fxmlLoader.load();
                 ResultsController rc = fxmlLoader.getController();
                 Stage stage = new Stage();
-                stage.setOnCloseRequest(closeEvent -> Platform.exit());
+                stage.setOnCloseRequest(closeEvent -> stage.close());
                 stage.setOnShowing(showEvent -> {
-                    ArrayList<Result> results = (ArrayList<Result>)Fetcher.fetchMovies(searchTextField.getText());
+                    ArrayList<Result> results = (ArrayList<Result>) Fetcher.fetchMovies(searchTextField.getText());
                     rc.setResults(results);
                 });
                 stage.setScene(new Scene(root));
@@ -101,11 +101,6 @@ public class Controller implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            /*Movie movie = Fetcher.fetchMovie(searchTextField.getText());
-            if(movie != null){
-                movies.add(movie);
-                updateTable();
-            }*/
         }
     }
 
@@ -116,16 +111,24 @@ public class Controller implements Initializable {
         }
     }
 
-    private void updateTable(){
+    void updateTable(){
         entriesTable.getItems().clear();
-        ObservableSet<Movie> content = FXCollections.observableSet(new HashSet<>(movies));
+        ArrayList<Movie> distinctMovies = (ArrayList<Movie>) movies.stream().
+                filter(distinctByKey(Movie::getTitle)).
+                collect(Collectors.toList());
+        ObservableList<Movie> content = FXCollections.observableList(distinctMovies);
         entriesTable.getItems().addAll(content);
 
+        /*System.out.println(content.stream()
+                .mapToInt(item -> Integer.parseInt(item.getImdbVotes().replaceAll(",", "")))
+                .sum());*/
         entriesLabel.setText(String.valueOf(content.size()));
+        DecimalFormat numberFormat = new DecimalFormat("#.00");
         OptionalDouble averageScore = content.stream()
-                .mapToDouble(Movie::getImdbRating)
+                .mapToDouble(a -> Double.parseDouble(a.getImdbRating()))
                 .average();
-        scoreLabel.setText(averageScore.isPresent() ? String.valueOf(averageScore.getAsDouble()) : "0");
+        scoreLabel.setText(averageScore.isPresent() ?
+                String.valueOf(numberFormat.format(averageScore.getAsDouble())) : "0");
         completedLabel.setText(String.valueOf(content.stream()
                 .filter(a -> a.getStatus().toString().equals(Status.COMPLETED.toString()))
                 .count()));
@@ -181,5 +184,14 @@ public class Controller implements Initializable {
                 };
             }
         });
+    }
+
+    public ArrayList<Movie> getMovies() {
+        return movies;
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 }

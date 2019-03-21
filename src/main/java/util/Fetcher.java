@@ -1,14 +1,19 @@
+package util;
+
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import data.Movie;
 import data.Result;
 import data.Status;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Fetcher {
 
@@ -21,6 +26,8 @@ public class Fetcher {
         JsonElement jsonElement = new JsonParser().parse(json);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         if(jsonObject.get("Error") == null){
+            //Type type = new TypeToken<Map<String, String>>(){}.getType();
+            //Map<String, String> myMap = new Gson().fromJson("{'k1':'apple','k2':'orange'}", type);
             Movie movie = new Gson().fromJson(jsonObject, Movie.class);
             movie.setStatus(Status.PLANNED);
             return movie;
@@ -73,5 +80,31 @@ public class Fetcher {
             ioException.printStackTrace();
         }
         return "";
+    }
+
+    public class IgnoringFieldsNotMatchingCriteriaSerializer
+            implements JsonSerializer<Movie> {
+
+        /*@Override
+        public JsonElement serialize
+                (SourceClass src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject jObject = new JsonObject();
+
+            // Criteria: intValue >= 0
+            if (src.getIntValue() >= 0) {
+                String intValue = "intValue";
+                jObject.addProperty(intValue, src.getIntValue());
+            }
+
+            String stringValue = "stringValue";
+            jObject.addProperty(stringValue, src.getStringValue());
+
+            return jObject;
+        }*/
+
+        @Override
+        public JsonElement serialize(Movie movie, Type type, JsonSerializationContext jsonSerializationContext) {
+            return null;
+        }
     }
 }
