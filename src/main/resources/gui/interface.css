@@ -1,18 +1,33 @@
-.centered {
-    -fx-alignment: CENTER;
+.sidebar-button:hover {
+    -fx-background-color: rgba(0,0,0,0.1);
+    /*-fx-start-margin: 10;*/
 }
 
-.informationLabel {
-    -fx-font-family: "Fira Code";
-    -fx-font-size: 15px;
-    -fx-font-weight: bold;
+.sidebar-button:selected {
+    -fx-background-color: white;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-border-style: none;
+    -fx-border-width: 0;
+}
+
+#sidebar {
+    -fx-background-color: darkgrey;
 }
 
 .table-view{
-    -fx-background-color: rgba(0,0,0,0.1);
+    /*-fx-background-color: rgba(0,0,0,0.1);*/
 }
 
 .table-row-cell:focused {
     /*-fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);*/
     -fx-text-fill: white;
+}
+
+.noheader .column-header-background {
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
 }

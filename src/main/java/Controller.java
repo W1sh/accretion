@@ -88,14 +88,14 @@ public class Controller implements Initializable {
             enterPressed.set(true);
             Parent root;
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/results.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main.fxml"));
                 root = fxmlLoader.load();
-                ResultsController rc = fxmlLoader.getController();
+                App.mainViewController = fxmlLoader.getController();
                 Stage stage = new Stage();
                 stage.setOnCloseRequest(closeEvent -> stage.close());
                 stage.setOnShowing(showEvent -> {
                     ArrayList<Result> results = (ArrayList<Result>) Fetcher.fetchMovies(searchTextField.getText());
-                    rc.setResults(results);
+                    App.mainViewController.setResults(results);
                 });
                 stage.setScene(new Scene(root));
                 stage.show();

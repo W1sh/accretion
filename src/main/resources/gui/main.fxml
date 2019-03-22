@@ -1,72 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainViewController">
+<VBox prefHeight="600.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainViewController">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="File">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
-          </items>
-        </Menu>
-            <Menu mnemonicParsing="false" text="View">
-              <items>
-                  <MenuItem fx:id="idMenuItemMain" mnemonicParsing="false" text="Main" />
-                <MenuItem fx:id="idMenuItemTable" mnemonicParsing="false" onAction="#loadTableView" text="Table" />
-              </items>
-            </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem disable="true" mnemonicParsing="false" text="Undo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About Accretion" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
-      <GridPane prefHeight="400.0" prefWidth="640.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+          <Button fx:id="navigationIcon" alignment="CENTER" mnemonicParsing="false" prefHeight="28.0" prefWidth="90.0" styleClass="sidebar-button" ButtonBar.buttonData="LEFT" />
+            <Button disable="true" mnemonicParsing="false" styleClass="sidebar-button" />
+        </buttons>
+      </ButtonBar>
+      <StackPane prefHeight="600.0" prefWidth="960.0">
          <children>
-            <TextField prefHeight="26.0" prefWidth="319.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <Label alignment="CENTER" prefHeight="40.0" prefWidth="330.0" text="Accretion" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2">
-               <font>
-                  <Font name="DejaVu Sans Bold" size="32.0" />
-               </font>
-            </Label>
+            <VBox id="sidebar" fillWidth="false" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="150.0" visible="false" StackPane.alignment="TOP_LEFT">
+               <children>
+                  <ImageView fx:id="sidebarImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button fx:id="sidebarMainMenu" mnemonicParsing="false" prefWidth="150.0" styleClass="sidebar-button" text="Main">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="sidebarListMenu" mnemonicParsing="false" prefWidth="150.0" styleClass="sidebar-button" text="List">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <GridPane prefHeight="325.0" prefWidth="960.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="320.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="218.0" minHeight="10.0" prefHeight="87.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="325.0" minHeight="10.0" prefHeight="110.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="354.0" minHeight="10.0" prefHeight="123.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="153.0" minHeight="10.0" prefHeight="125.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="86.0" minHeight="10.0" prefHeight="86.0" vgrow="SOMETIMES" />
+                  <RowConstraints />
+              </rowConstraints>
+               <children>
+                  <TextField fx:id="searchTextField" onKeyPressed="#searchFieldPressed" onKeyReleased="#searchFieldReleased" prefHeight="26.0" prefWidth="273.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                  <Label alignment="CENTER" prefHeight="40.0" prefWidth="481.0" text="Accretion" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                     <font>
+                        <Font name="DejaVu Sans Bold" size="32.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="resultsTableLeft" prefHeight="200.0" prefWidth="480.0" styleClass="noheader" stylesheets="@interface.css" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.rowSpan="4">
+                    <columns>
+                      <TableColumn fx:id="colPosterLeft" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Poster" />
+                      <TableColumn fx:id="colInformationLeft" editable="false" maxWidth="200.0" prefWidth="200.0" resizable="false" text="Information" />
+                    </columns>
+                  </TableView>
+                  <TableView fx:id="resultsTableRight" layoutX="10.0" layoutY="126.0" prefHeight="200.0" prefWidth="200.0" styleClass="noheader" stylesheets="@interface.css" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.rowSpan="3">
+                     <columns>
+                        <TableColumn fx:id="colPosterRight" maxWidth="100.0" prefWidth="100.0" resizable="false" text="Poster" />
+                        <TableColumn fx:id="colInformationRight" editable="false" maxWidth="200.0" prefWidth="200.0" resizable="false" text="Information" />
+                     </columns>
+                  </TableView>
+               </children>
+            </GridPane>
          </children>
-      </GridPane>
+      </StackPane>
   </children>
+   <stylesheets>
+      <URL value="@bootstrap3.css" />
+      <URL value="@interface.css" />
+   </stylesheets>
 </VBox>

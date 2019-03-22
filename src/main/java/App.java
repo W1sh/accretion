@@ -30,6 +30,8 @@ public class App extends Application {
                 // prepare table
             });
             Scene scene = new Scene(root);
+            scene.getStylesheets().add("/gui/interface.css");
+            scene.getStylesheets().add("/gui/bootstrap3.css");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {

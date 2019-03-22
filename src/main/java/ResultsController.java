@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class ResultsController implements Initializable {
+/*public class ResultsController implements Initializable {
 
     @FXML private TableView<Result> resultsTable;
     @FXML private TableColumn<Result, ImageView> colPoster;
@@ -76,5 +76,5 @@ public class ResultsController implements Initializable {
         Movie movie = Fetcher.fetchMovie(object.getTitle());
         App.controller.getMovies().add(movie);
         App.controller.updateTable();
-    }
-}
+    }*/
+//}
