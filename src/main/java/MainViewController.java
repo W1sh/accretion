@@ -1,6 +1,8 @@
 import data.Movie;
 import data.Result;
 import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -18,18 +20,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import util.Fetcher;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.TimerTask;
 
 public class MainViewController implements Initializable {
 
     @FXML private Button navigationIcon;
+    @FXML private VBox navigationSidebar;
     @FXML private ImageView sidebarImageView;
     @FXML private Button sidebarMainMenu;
     @FXML private Button sidebarListMenu;
@@ -45,11 +51,39 @@ public class MainViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        TranslateTransition swipeTransitionIn = new TranslateTransition(Duration.millis(300));
+        swipeTransitionIn.setNode(navigationSidebar);
+        swipeTransitionIn.setFromX(0 - navigationSidebar.getPrefWidth());
+        swipeTransitionIn.setToX(0);
+        swipeTransitionIn.setCycleCount(1);
+        swipeTransitionIn.setAutoReverse(false);
+        TranslateTransition swipeTransitionOut = new TranslateTransition(Duration.millis(300));
+        swipeTransitionOut.setNode(navigationSidebar);
+        swipeTransitionOut.setFromX(0);
+        swipeTransitionOut.setToX(0 - navigationSidebar.getPrefWidth());
+        swipeTransitionOut.setCycleCount(1);
+        swipeTransitionOut.setAutoReverse(false);
+
         SvgImageLoaderFactory.install();
         ImageView navIconIV = new ImageView(new Image("/gui/assets/bars.svg"));
-        navIconIV.setFitWidth(15);
+        navIconIV.setFitWidth(30);
         navIconIV.setFitHeight(15);
         navigationIcon.setGraphic(navIconIV);
+        navigationIcon.setOnMouseClicked(e -> {
+            if(navigationSidebar.isVisible()){
+                swipeTransitionOut.playFromStart();
+                new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                navigationSidebar.setVisible(false);
+                            }
+                        },300);
+            }else{
+                navigationSidebar.setVisible(true);
+                swipeTransitionIn.playFromStart();
+            }
+        });
         colPosterLeft.setCellValueFactory(MainViewController::posterCellValueFactory);
         colPosterRight.setCellValueFactory(MainViewController::posterCellValueFactory);
         colInformationRight.setCellValueFactory(MainViewController::infoCellValueFactory);
