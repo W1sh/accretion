@@ -5,12 +5,14 @@ import com.google.gson.annotations.SerializedName;
 public class Result {
 
     @SerializedName("Title") private String title;
+    @SerializedName("Type") private String type;
     @SerializedName("Year") private int year;
     @SerializedName("Poster") private String poster;
     private String imdbID;
 
-    public Result(String title, int year, String poster, String imdbID) {
+    public Result(String title, String type, int year, String poster, String imdbID) {
         this.title = title;
+        this.type = type;
         this.year = year;
         this.poster = poster;
         this.imdbID = imdbID;
@@ -48,6 +50,14 @@ public class Result {
         this.imdbID = imdbID;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "Result{" +
@@ -55,6 +65,7 @@ public class Result {
                 ", year=" + year +
                 ", poster='" + poster + '\'' +
                 ", imdbID='" + imdbID + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

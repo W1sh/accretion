@@ -3,6 +3,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,7 +24,7 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         window = primaryStage;
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main_jf.fxml"));
             Parent root = fxmlLoader.load();
             mainViewController = fxmlLoader.getController();
             primaryStage.setTitle("Accretion 1.1");
@@ -31,7 +34,8 @@ public class App extends Application {
             });
             Scene scene = new Scene(root);
             scene.getStylesheets().add("/gui/interface.css");
-            scene.getStylesheets().add("/gui/bootstrap3.css");
+            scene.getStylesheets().add("/gui/dark-theme.css");
+            //scene.getStylesheets().add("/gui/bootstrap3.css");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {

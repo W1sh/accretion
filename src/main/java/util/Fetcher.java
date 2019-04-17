@@ -5,11 +5,15 @@ import com.google.gson.reflect.TypeToken;
 import data.Movie;
 import data.Result;
 import data.Status;
+import gui.utils.Dialog;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
+import javafx.scene.layout.Region;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +80,14 @@ public class Fetcher {
                 buffer.append(chars, 0, read);
             reader.close();
             return buffer.toString();
+        } catch (MalformedURLException malformedURLException) {
+            // error dialog, malformed URL
+            System.out.println("Malformed URL");
+        } catch (SocketException | UnknownHostException internetRelatedException){
+            // log exception
+            Dialog.showAlertDialog("Please check your internet connection!");
         } catch (IOException ioException){
+            // log exception
             ioException.printStackTrace();
         }
         return "";

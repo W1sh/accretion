@@ -1,8 +1,5 @@
 import data.Movie;
 import data.Result;
-import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -20,77 +17,33 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.Duration;
 import util.Fetcher;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 public class MainViewController implements Initializable {
 
-    @FXML private Button navigationIcon;
-    @FXML private VBox navigationSidebar;
-    @FXML private ImageView sidebarImageView;
-    @FXML private Button sidebarMainMenu;
-    @FXML private Button sidebarListMenu;
-    @FXML private TableView<Result> resultsTableLeft;
-    @FXML private TableColumn<Result, ImageView> colPosterLeft;
-    @FXML private TableColumn<Result, String> colInformationLeft;
-    @FXML private TableView<Result> resultsTableRight;
-    @FXML private TableColumn<Result, ImageView> colPosterRight;
-    @FXML private TableColumn<Result, String> colInformationRight;
+    @FXML private TableView<Result> resultsTable;
+    @FXML private TableColumn<Result, ImageView> colPoster;
+    @FXML private TableColumn<Result, String> colInformation;
+    @FXML private TableColumn<Result, String> colType;
     @FXML private TextField searchTextField;
 
     private final BooleanProperty enterPressed = new SimpleBooleanProperty(false);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TranslateTransition swipeTransitionIn = new TranslateTransition(Duration.millis(300));
-        swipeTransitionIn.setNode(navigationSidebar);
-        swipeTransitionIn.setFromX(0 - navigationSidebar.getPrefWidth());
-        swipeTransitionIn.setToX(0);
-        swipeTransitionIn.setCycleCount(1);
-        swipeTransitionIn.setAutoReverse(false);
-        TranslateTransition swipeTransitionOut = new TranslateTransition(Duration.millis(300));
-        swipeTransitionOut.setNode(navigationSidebar);
-        swipeTransitionOut.setFromX(0);
-        swipeTransitionOut.setToX(0 - navigationSidebar.getPrefWidth());
-        swipeTransitionOut.setCycleCount(1);
-        swipeTransitionOut.setAutoReverse(false);
-
-        SvgImageLoaderFactory.install();
-        ImageView navIconIV = new ImageView(new Image("/gui/assets/bars.svg"));
-        navIconIV.setFitWidth(30);
-        navIconIV.setFitHeight(15);
-        navigationIcon.setGraphic(navIconIV);
-        navigationIcon.setOnMouseClicked(e -> {
-            if(navigationSidebar.isVisible()){
-                swipeTransitionOut.playFromStart();
-                new java.util.Timer().schedule(
-                        new java.util.TimerTask() {
-                            @Override
-                            public void run() {
-                                navigationSidebar.setVisible(false);
-                            }
-                        },300);
-            }else{
-                navigationSidebar.setVisible(true);
-                swipeTransitionIn.playFromStart();
-            }
+        colPoster.setCellValueFactory(MainViewController::posterCellValueFactory);
+        colInformation.setCellValueFactory(MainViewController::infoCellValueFactory);
+        colType.setCellValueFactory(param -> {
+            String value = param.getValue().getType().substring(0, 1).toUpperCase() + param.getValue().getType().substring(1);
+            return new ReadOnlyObjectWrapper<>(value);
         });
-        colPosterLeft.setCellValueFactory(MainViewController::posterCellValueFactory);
-        colPosterRight.setCellValueFactory(MainViewController::posterCellValueFactory);
-        colInformationRight.setCellValueFactory(MainViewController::infoCellValueFactory);
-        colInformationLeft.setCellValueFactory(MainViewController::infoCellValueFactory);
-
-        resultsTableRight.setPlaceholder(new Label(""));
-        resultsTableLeft.setPlaceholder(new Label(""));
+        resultsTable.setPlaceholder(new Label(""));
         assignContextMenu();
     }
 
@@ -125,22 +78,17 @@ public class MainViewController implements Initializable {
     }
 
     public void setResults(ArrayList<Result> results){
-        ObservableList<Result> content = FXCollections.observableList(results);
-        for (int i = 0; i < content.size(); i++) {
-            if(i % 2 == 0){
-                resultsTableLeft.getItems().add(content.get(i));
-            }else{
-                resultsTableRight.getItems().add(content.get(i));
-            }
-        }
-        resultsTableLeft.refresh();
-        resultsTableRight.refresh();
+        ObservableList<Result> content = FXCollections.observableList(
+                results.stream()
+                        .filter(item -> !item.getType().equals("game"))
+                        .collect(Collectors.toList()));
+        resultsTable.getItems().addAll(content);
+        resultsTable.refresh();
     }
 
 
     private void assignContextMenu(){
-        resultsTableLeft.setRowFactory(MainViewController::resultsRowFactory);
-        resultsTableRight.setRowFactory(MainViewController::resultsRowFactory);
+        resultsTable.setRowFactory(MainViewController::resultsRowFactory);
     }
 
     private static void addEvent(TableRow<Result> row){
