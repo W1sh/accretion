@@ -1,11 +1,14 @@
+import com.jfoenix.controls.JFXSpinner;
 import data.Movie;
 import data.Result;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,11 +20,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import util.Fetcher;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -52,7 +57,7 @@ public class MainViewController implements Initializable {
         if(event.getCode().equals(KeyCode.ENTER)){
             enterPressed.set(true);
             ArrayList<Result> results = (ArrayList<Result>) Fetcher.fetchMovies(searchTextField.getText());
-            setResults(results);
+            Platform.runLater(() -> setResults(results));
         }
     }
 
@@ -77,13 +82,30 @@ public class MainViewController implements Initializable {
         }
     }
 
-    public void setResults(ArrayList<Result> results){
-        ObservableList<Result> content = FXCollections.observableList(
-                results.stream()
-                        .filter(item -> !item.getType().equals("game"))
-                        .collect(Collectors.toList()));
-        resultsTable.getItems().addAll(content);
-        resultsTable.refresh();
+    public void setResults(List<Result> results){
+        if(results.isEmpty()){
+            resultsTable.setPlaceholder(new Label("No results found for \"" + searchTextField.getText() + "\"."));
+        }else{
+            Task task = new Task<>() {
+                @Override
+                protected Object call() {
+                    ObservableList<Result> content = FXCollections.observableList(
+                            results.stream()
+                                    .filter(item -> !item.getType().equals("game"))
+                                    .collect(Collectors.toList()));
+                    resultsTable.getItems().addAll(content);
+                    resultsTable.refresh();
+                    return null;
+                }
+            };
+            //TODO: get spinner on scenebuilder
+            /*JFXSpinner spinner = new JFXSpinner();
+            spinner.setPrefSize(30,30);
+            spinner.setStyle("-fx-background-color: #f4f4f4");
+            spinner.progressProperty().bind(task.progressProperty());
+            resultsTable.setPlaceholder(spinner);*/
+            new Thread(task).start();
+        }
     }
 
 

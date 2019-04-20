@@ -45,14 +45,18 @@ public class Fetcher {
         String json = fetchJsonFromURL(MULTIPLE_FETCH_OMDB + URLEncoder.encode(
                 filter, StandardCharsets.UTF_8));
         JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-        JsonArray jsonArray = jsonObject.get("Search").getAsJsonArray();
-
-        ArrayList<Result> results = new ArrayList<>();
-        for (JsonElement element : jsonArray) {
-            Result result = new Gson().fromJson(element.getAsJsonObject(), Result.class);
-            results.add(result);
-        }
+        try {
+            JsonArray jsonArray = jsonObject.get("Search").getAsJsonArray();
+            ArrayList<Result> results = new ArrayList<>();
+            for (JsonElement element : jsonArray) {
+                Result result = new Gson().fromJson(element.getAsJsonObject(), Result.class);
+                results.add(result);
+            }
         return results;
+        } catch (NullPointerException npe){
+            npe.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     private static String fetchAPIKey() {

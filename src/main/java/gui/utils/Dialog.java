@@ -6,6 +6,8 @@ import javafx.scene.layout.Region;
 
 public class Dialog {
 
+    private Dialog(){}
+
     public static void showAlertDialog(String text){
         Alert alert = new Alert(Alert.AlertType.ERROR, text, ButtonType.OK);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
