@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
 
+    @FXML private MenuItem menuItemHome;
+
     @FXML private Label entriesLabel;
     @FXML private Label hoursLabel;
     @FXML private Label scoreLabel;
@@ -188,12 +190,13 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    void loadMain(ActionEvent event) {
+    void loadHome(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main_jf.fxml"));
             Parent root = fxmlLoader.load();
             App.mainViewController = fxmlLoader.getController();
             Scene scene = new Scene(root);
+            scene.getStylesheets().add("/gui/dark-theme.css");
             App.window.setScene(scene);
             App.window.show();
         } catch (IOException e) {

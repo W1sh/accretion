@@ -6,11 +6,12 @@ public class Result {
 
     @SerializedName("Title") private String title;
     @SerializedName("Type") private String type;
-    @SerializedName("Year") private int year;
+    @SerializedName("Year") private String year;
     @SerializedName("Poster") private String poster;
+    private Movie movie;
     private String imdbID;
 
-    public Result(String title, String type, int year, String poster, String imdbID) {
+    public Result(String title, String type, String year, String poster, String imdbID) {
         this.title = title;
         this.type = type;
         this.year = year;
@@ -26,11 +27,11 @@ public class Result {
         this.title = title;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
@@ -56,6 +57,14 @@ public class Result {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
     @Override

@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -50,12 +51,13 @@ public class Fetcher {
             ArrayList<Result> results = new ArrayList<>();
             for (JsonElement element : jsonArray) {
                 Result result = new Gson().fromJson(element.getAsJsonObject(), Result.class);
+                result.setMovie(fetchMovie(result.getTitle()));
                 results.add(result);
             }
-        return results;
+            return results;
         } catch (NullPointerException npe){
             npe.printStackTrace();
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 

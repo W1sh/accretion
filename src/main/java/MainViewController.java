@@ -1,14 +1,12 @@
 import com.jfoenix.controls.JFXSpinner;
 import data.Movie;
 import data.Result;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,23 +18,29 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import util.Fetcher;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class MainViewController implements Initializable {
 
+    @FXML private MenuItem menuItemMovieList;
     @FXML private TableView<Result> resultsTable;
     @FXML private TableColumn<Result, ImageView> colPoster;
     @FXML private TableColumn<Result, String> colInformation;
     @FXML private TableColumn<Result, String> colType;
+    @FXML private TableColumn<Result, String> colPlot;
     @FXML private TextField searchTextField;
+    @FXML private GridPane tableLoadingPane;
+    @FXML private JFXSpinner tableLoadingSpinner;
 
     private final BooleanProperty enterPressed = new SimpleBooleanProperty(false);
 
@@ -48,7 +52,10 @@ public class MainViewController implements Initializable {
             String value = param.getValue().getType().substring(0, 1).toUpperCase() + param.getValue().getType().substring(1);
             return new ReadOnlyObjectWrapper<>(value);
         });
+        colPlot.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getMovie().getPlot()));
         resultsTable.setPlaceholder(new Label(""));
+
+        menuItemMovieList.setOnAction(this::loadTableView);
         assignContextMenu();
     }
 
@@ -56,8 +63,25 @@ public class MainViewController implements Initializable {
     void searchFieldPressed(KeyEvent event) {
         if(event.getCode().equals(KeyCode.ENTER)){
             enterPressed.set(true);
-            ArrayList<Result> results = (ArrayList<Result>) Fetcher.fetchMovies(searchTextField.getText());
-            Platform.runLater(() -> setResults(results));
+            tableLoadingPane.setVisible(true);
+            tableLoadingSpinner.setVisible(true);
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            final Future<?> future = executorService.submit(() -> {
+                List<Result> results = Fetcher.fetchMovies(searchTextField.getText());
+                resultsTable.getItems().clear();
+                setResults(results);
+            });
+            try {
+                future.get(5, TimeUnit.SECONDS);
+            }catch (TimeoutException | InterruptedException | ExecutionException timeout){
+                timeout.printStackTrace();
+            } finally {
+                setResults(Collections.emptyList());
+            }
+            if(future.isDone()){
+                tableLoadingSpinner.setVisible(false);
+                tableLoadingPane.setVisible(false);
+            }
         }
     }
 
@@ -75,6 +99,7 @@ public class MainViewController implements Initializable {
             Parent root = fxmlLoader.load();
             App.controller = fxmlLoader.getController();
             Scene scene = new Scene(root);
+            scene.getStylesheets().add("/gui/dark-theme.css");
             App.window.setScene(scene);
             App.window.show();
         } catch (IOException e) {
@@ -82,29 +107,16 @@ public class MainViewController implements Initializable {
         }
     }
 
-    public void setResults(List<Result> results){
+    void setResults(List<Result> results){
         if(results.isEmpty()){
             resultsTable.setPlaceholder(new Label("No results found for \"" + searchTextField.getText() + "\"."));
         }else{
-            Task task = new Task<>() {
-                @Override
-                protected Object call() {
-                    ObservableList<Result> content = FXCollections.observableList(
-                            results.stream()
-                                    .filter(item -> !item.getType().equals("game"))
-                                    .collect(Collectors.toList()));
-                    resultsTable.getItems().addAll(content);
-                    resultsTable.refresh();
-                    return null;
-                }
-            };
-            //TODO: get spinner on scenebuilder
-            /*JFXSpinner spinner = new JFXSpinner();
-            spinner.setPrefSize(30,30);
-            spinner.setStyle("-fx-background-color: #f4f4f4");
-            spinner.progressProperty().bind(task.progressProperty());
-            resultsTable.setPlaceholder(spinner);*/
-            new Thread(task).start();
+            ObservableList<Result> content = FXCollections.observableList(
+                    results.stream()
+                            .filter(item -> !item.getType().equals("game"))
+                            .collect(Collectors.toList()));
+            resultsTable.getItems().addAll(content);
+            resultsTable.refresh();
         }
     }
 
@@ -129,10 +141,16 @@ public class MainViewController implements Initializable {
 
     private static ReadOnlyObjectWrapper<ImageView> posterCellValueFactory(
             TableColumn.CellDataFeatures<Result, ImageView> param){
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(75);
         try {
-            ImageView imageView = new ImageView(new Image(new URL(param.getValue().getPoster()).openStream()));
-            imageView.setFitHeight(150);
-            imageView.setFitWidth(100);
+            URL posterURL = new URL(param.getValue().getPoster());
+            imageView = new ImageView(new Image(posterURL.openStream()));
+            imageView.setFitHeight(100);
+            imageView.setFitWidth(75);
+            return new ReadOnlyObjectWrapper<>(imageView);
+        } catch (MalformedURLException murle){
             return new ReadOnlyObjectWrapper<>(imageView);
         } catch (IOException e) {
             e.printStackTrace();

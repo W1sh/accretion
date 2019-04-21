@@ -31,7 +31,7 @@
                 </Menu>
             <Menu mnemonicParsing="false" text="View">
               <items>
-                <MenuItem fx:id="idMenuItemMain" mnemonicParsing="false" onAction="#loadMain" text="Main" />
+                <MenuItem fx:id="menuItemHome" mnemonicParsing="false" onAction="#loadHome" text="Home" />
                   <MenuItem fx:id="idMenuItemTable" disable="true" mnemonicParsing="false" text="Table" />
               </items>
             </Menu>
@@ -52,17 +52,6 @@
         </MenuBar>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <children>
-                <TableView fx:id="entriesTable" layoutY="119.0" prefHeight="252.0" prefWidth="960.0" stylesheets="@interface.css" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
-                    <columns>
-                        <TableColumn fx:id="colStatus" editable="false" maxWidth="25.0" prefWidth="25.0" resizable="false" sortable="false" styleClass="centered" />
-                        <TableColumn fx:id="colName" editable="false" maxWidth="300.0" minWidth="200.0" prefWidth="300.0" text="Name" />
-                        <TableColumn fx:id="colGenre" editable="false" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" sortable="false" text="Genre" />
-                        <TableColumn fx:id="colDirector" editable="false" maxWidth="130.0" minWidth="100.0" prefWidth="125.0" resizable="false" styleClass="centered" text="Director" />
-                        <TableColumn fx:id="colProduction" maxWidth="164.0" prefWidth="139.0" resizable="false" sortable="false" styleClass="centered" text="Production" />
-                        <TableColumn fx:id="colRuntime" editable="false" prefWidth="83.0" resizable="false" styleClass="centered" text="Runtime" />
-                        <TableColumn fx:id="colRating" maxWidth="174.0" minWidth="77.0" prefWidth="77.0" resizable="false" styleClass="centered" text="Rating" />
-                    </columns>
-                </TableView>
                 <GridPane layoutX="14.0" layoutY="14.0" prefHeight="90.0" prefWidth="946.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="307.0" minWidth="10.0" prefWidth="306.0" />
@@ -113,6 +102,17 @@
                         <TextField fx:id="searchTextField" onKeyPressed="#fetchPressed" onKeyReleased="#fetchReleased" prefHeight="26.0" prefWidth="205.0" promptText="filter" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
+                <TableView fx:id="entriesTable" layoutY="119.0" prefHeight="440.0" prefWidth="960.0" stylesheets="@interface.css" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+                    <columns>
+                        <TableColumn fx:id="colStatus" editable="false" maxWidth="25.0" prefWidth="25.0" resizable="false" sortable="false" styleClass="centered" />
+                        <TableColumn fx:id="colName" editable="false" maxWidth="290.0" minWidth="200.0" prefWidth="290.0" text="Name" />
+                        <TableColumn fx:id="colGenre" editable="false" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" sortable="false" text="Genre" />
+                        <TableColumn fx:id="colDirector" editable="false" maxWidth="130.0" minWidth="100.0" prefWidth="125.0" resizable="false" styleClass="centered" text="Director" />
+                        <TableColumn fx:id="colProduction" maxWidth="164.0" prefWidth="139.0" resizable="false" sortable="false" styleClass="centered" text="Production" />
+                        <TableColumn fx:id="colRuntime" editable="false" prefWidth="83.0" resizable="false" styleClass="centered" text="Runtime" />
+                        <TableColumn fx:id="colRating" maxWidth="174.0" minWidth="77.0" prefWidth="77.0" resizable="false" styleClass="centered" text="Rating" />
+                    </columns>
+                </TableView>
             </children>
         </AnchorPane>
     </children>
