@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -11,11 +12,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<VBox prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MovieTableViewController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
@@ -69,32 +71,32 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label fx:id="entriesLabel" alignment="CENTER" contentDisplay="CENTER" styleClass="informationLabel" stylesheets="@interface.css" text="Label" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="entriesLabel" alignment="CENTER" contentDisplay="CENTER" styleClass="informationLabel" text="Label" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Label fx:id="entriesTextLabel" text="Total Entries" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                             <font>
                                 <Font size="11.0" />
                             </font></Label>
-                        <Label fx:id="hoursLabel" styleClass="informationLabel" stylesheets="@interface.css" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="hoursLabel" styleClass="informationLabel" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Label fx:id="hoursTextLabel" text="Hours of Content" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                             <font>
                                 <Font size="11.0" />
                             </font></Label>
-                        <Label fx:id="scoreLabel" styleClass="informationLabel" stylesheets="@interface.css" text="Label" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="scoreLabel" styleClass="informationLabel" text="Label" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Label fx:id="scoreTextLabel" text="Average Score" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                             <font>
                                 <Font size="11.0" />
                             </font></Label>
-                        <Label fx:id="completedLabel" styleClass="informationLabel" stylesheets="@interface.css" text="Label" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="completedLabel" styleClass="informationLabel" text="Label" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Label fx:id="completedTextLabel" text="Completed Entries" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                             <font>
                                 <Font size="11.0" />
                             </font></Label>
-                        <Label fx:id="ongoingLabel" styleClass="informationLabel" stylesheets="@interface.css" text="Label" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="ongoingLabel" styleClass="informationLabel" text="Label" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Label fx:id="ongoingTextLabel" text="Ongoing Entries" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                             <font>
                                 <Font size="11.0" />
                             </font></Label>
-                        <Label fx:id="droppedLabel" styleClass="informationLabel" stylesheets="@interface.css" text="Label" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="droppedLabel" styleClass="informationLabel" text="Label" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Label fx:id="droppedTextLabel" text="Dropped Entries" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                             <font>
                                 <Font size="11.0" />
@@ -102,7 +104,7 @@
                         <TextField fx:id="searchTextField" onKeyPressed="#fetchPressed" onKeyReleased="#fetchReleased" prefHeight="26.0" prefWidth="205.0" promptText="filter" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
-                <TableView fx:id="entriesTable" layoutY="119.0" prefHeight="440.0" prefWidth="960.0" stylesheets="@interface.css" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+                <TableView fx:id="entriesTable" layoutY="119.0" prefHeight="400.0" prefWidth="960.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
                     <columns>
                         <TableColumn fx:id="colStatus" editable="false" maxWidth="25.0" prefWidth="25.0" resizable="false" sortable="false" styleClass="centered" />
                         <TableColumn fx:id="colName" editable="false" maxWidth="290.0" minWidth="200.0" prefWidth="290.0" text="Name" />
@@ -115,5 +117,9 @@
                 </TableView>
             </children>
         </AnchorPane>
+      <HBox fx:id="breadcrumbsContainer" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" styleClass="breadcrumb" />
     </children>
+    <stylesheets>
+        <URL value="@dark-theme.css" />
+    </stylesheets>
 </VBox>

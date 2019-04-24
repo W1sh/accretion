@@ -1,15 +1,10 @@
 package util;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import data.Movie;
 import data.Result;
 import data.Status;
-import gui.utils.Dialog;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.layout.Region;
+import gui.Dialog;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -18,12 +13,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Fetcher {
 
     public static final String API_TAG = "&apikey=";
-    public static final String SINGLE_FETCH_OMDB = "http://www.omdbapi.com/?t=";
+    public static final String SINGLE_FETCH_OMDB = "http://www.omdbapi.com/?plot=full&t=";
     public static final String MULTIPLE_FETCH_OMDB = "http://www.omdbapi.com/?s=";
 
     public static Movie fetchMovie(String name) {

@@ -11,6 +11,7 @@ public class Movie {
     @SerializedName("Year") private String year; // int
     @SerializedName("Runtime") private String runtime;
     @SerializedName("Rated") private String rating;
+    @SerializedName("Released") private String released;
     @SerializedName("Director") private String director;
     @SerializedName("Writer") private String writers;
     @SerializedName("Actors") private String actors;
@@ -19,9 +20,11 @@ public class Movie {
     @SerializedName("Language") private String language;
     @SerializedName("Country") private String country;
     @SerializedName("Awards") private String awards;
+    @SerializedName("Type") private String type;
     @SerializedName("Production") private String production;
     @SerializedName("BoxOffice") private String boxOffice; // currency
     @SerializedName("Metascore") private String metascore; // int
+    @SerializedName("Poster") private String poster; // int
     private String imdbRating; // double
     private String imdbVotes; // int
     private String imdbID;
@@ -204,6 +207,30 @@ public class Movie {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getReleased() {
+        return released;
+    }
+
+    public void setReleased(String released) {
+        this.released = released;
     }
 
     public int numericValueOfRuntime(){

@@ -1,5 +1,6 @@
+package gui;
+
 import data.Movie;
-import data.Result;
 import data.Status;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -8,19 +9,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-import util.Fetcher;
+import javafx.scene.layout.HBox;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -31,8 +26,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Controller implements Initializable {
+public class MovieTableViewController implements Initializable {
 
+    @FXML private HBox breadcrumbsContainer;
     @FXML private MenuItem menuItemHome;
 
     @FXML private Label entriesLabel;
@@ -57,7 +53,7 @@ public class Controller implements Initializable {
 
     private ArrayList<Movie> movies;
 
-    public Controller() {
+    public MovieTableViewController() {
         movies = new ArrayList<>();
     }
 
@@ -88,22 +84,6 @@ public class Controller implements Initializable {
     void fetchPressed(KeyEvent event) {
         if(event.getCode().equals(KeyCode.ENTER)){
             enterPressed.set(true);
-            Parent root;
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main.fxml"));
-                root = fxmlLoader.load();
-                App.mainViewController = fxmlLoader.getController();
-                Stage stage = new Stage();
-                stage.setOnCloseRequest(closeEvent -> stage.close());
-                stage.setOnShowing(showEvent -> {
-                    ArrayList<Result> results = (ArrayList<Result>) Fetcher.fetchMovies(searchTextField.getText());
-                    App.mainViewController.setResults(results);
-                });
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -152,56 +132,42 @@ public class Controller implements Initializable {
 
     @SuppressWarnings("unchecked")
     private <S, T> void alterColumnCellFactory(TableColumn column) {
-        column.setCellFactory(new Callback<TableColumn<S, T>, TableCell<S, T>>() {
+        column.setCellFactory(p -> new TableCell<S, T>() {
             @Override
-            public TableCell<S, T> call(TableColumn<S, T> param) {
-                return new TableCell<>() {
-                    @Override
-                    public void updateItem(T item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (!isEmpty()) {
-                            if (this.getId().equals("colStatus")) {
-                                switch (String.valueOf(item)) {
-                                    case "Planned":
-                                        setStyle("-fx-background-color: GREY");
-                                        break;
-                                    case "Ongoing":
-                                        setStyle("-fx-background-color: GREEN");
-                                        break;
-                                    case "Completed":
-                                        setStyle("-fx-background-color: BLUE");
-                                        break;
-                                    case "Dropped":
-                                        setStyle("-fx-background-color: RED");
-                                        break;
-                                }
-                                setText("");
-                            } else {
-                                setText(String.valueOf(item));
-                            }
-                        }
-                        if (Objects.isNull(item)) {
-                            setText("");
-                        }
+            public void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!isEmpty() && this.getId().equals("colStatus")) {
+                    switch (String.valueOf(item)) {
+                        case "Planned":
+                            setStyle("-fx-background-color: GREY");
+                            break;
+                        case "Ongoing":
+                            setStyle("-fx-background-color: GREEN");
+                            break;
+                        case "Completed":
+                            setStyle("-fx-background-color: BLUE");
+                            break;
+                        case "Dropped":
+                            setStyle("-fx-background-color: RED");
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + item);
                     }
-                };
+                    setText("");
+                } else {
+                    setText(String.valueOf(item));
+                }
+                if (Objects.isNull(item)) {
+                    setText("");
+                }
             }
         });
     }
 
     @FXML
     void loadHome(ActionEvent event) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/main_jf.fxml"));
-            Parent root = fxmlLoader.load();
-            App.mainViewController = fxmlLoader.getController();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add("/gui/dark-theme.css");
-            App.window.setScene(scene);
-            App.window.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SceneController sceneController = SceneController.getInstance();
+        sceneController.activate("main");
     }
 
     public ArrayList<Movie> getMovies() {

@@ -1,3 +1,5 @@
+package gui;
+
 import com.jfoenix.controls.JFXSpinner;
 import data.Movie;
 import data.Result;
@@ -9,25 +11,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import util.Fetcher;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class MainViewController implements Initializable {
@@ -41,6 +40,7 @@ public class MainViewController implements Initializable {
     @FXML private TextField searchTextField;
     @FXML private GridPane tableLoadingPane;
     @FXML private JFXSpinner tableLoadingSpinner;
+    @FXML private HBox breadcrumbsContainer;
 
     private final BooleanProperty enterPressed = new SimpleBooleanProperty(false);
 
@@ -57,6 +57,8 @@ public class MainViewController implements Initializable {
 
         menuItemMovieList.setOnAction(this::loadTableView);
         assignContextMenu();
+
+        buildBreadcrumbs();
     }
 
     @FXML
@@ -65,23 +67,13 @@ public class MainViewController implements Initializable {
             enterPressed.set(true);
             tableLoadingPane.setVisible(true);
             tableLoadingSpinner.setVisible(true);
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            final Future<?> future = executorService.submit(() -> {
+            Executors.newSingleThreadExecutor().submit(() -> {
                 List<Result> results = Fetcher.fetchMovies(searchTextField.getText());
                 resultsTable.getItems().clear();
                 setResults(results);
-            });
-            try {
-                future.get(5, TimeUnit.SECONDS);
-            }catch (TimeoutException | InterruptedException | ExecutionException timeout){
-                timeout.printStackTrace();
-            } finally {
-                setResults(Collections.emptyList());
-            }
-            if(future.isDone()){
-                tableLoadingSpinner.setVisible(false);
                 tableLoadingPane.setVisible(false);
-            }
+                tableLoadingSpinner.setVisible(false);
+            });
         }
     }
 
@@ -93,21 +85,12 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    void loadTableView(ActionEvent event) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/application.fxml"));
-            Parent root = fxmlLoader.load();
-            App.controller = fxmlLoader.getController();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add("/gui/dark-theme.css");
-            App.window.setScene(scene);
-            App.window.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void loadTableView(ActionEvent event) {
+        SceneController sceneController = SceneController.getInstance();
+        sceneController.activate("movie_table");
     }
 
-    void setResults(List<Result> results){
+    private void setResults(List<Result> results){
         if(results.isEmpty()){
             resultsTable.setPlaceholder(new Label("No results found for \"" + searchTextField.getText() + "\"."));
         }else{
@@ -127,10 +110,13 @@ public class MainViewController implements Initializable {
 
     private static void addEvent(TableRow<Result> row){
         Result object = row.getItem();
-        System.out.println(object.getTitle());
-        Movie movie = Fetcher.fetchMovie(object.getTitle());
-        App.controller.getMovies().add(movie);
-        App.controller.updateTable();
+        SceneController sceneController = SceneController.getInstance();
+        MovieTableViewController mtvController = (MovieTableViewController)
+                sceneController.getController(App.View.MOVIE_TABLE_VIEW.name);
+        mtvController.getMovies().add(object.getMovie());
+        mtvController.updateTable();
+        sceneController.createSnackbar(object.getMovie().getTitle() + " added to the list!", "Undo", null);
+        // show snackbar, maybe undo
     }
 
     private static ReadOnlyObjectWrapper<String> infoCellValueFactory(
@@ -164,7 +150,10 @@ public class MainViewController implements Initializable {
         MenuItem miAdd = new MenuItem("Add to your list");
         row.setOnMouseClicked(e -> {
             if(e.getClickCount() == 2){
-                addEvent(row);
+                SceneController.getInstance().activate("movie_details");
+                MovieDetailsViewController mdvController =
+                        (MovieDetailsViewController) SceneController.getInstance().getController("movie_details");
+                mdvController.showDetails(row.getItem().getMovie());
             }
         });
         miAdd.setOnAction(e -> addEvent(row));
@@ -175,5 +164,11 @@ public class MainViewController implements Initializable {
                         .then(rowMenu)
                         .otherwise((ContextMenu)null));
         return row;
+    }
+
+    private void buildBreadcrumbs(){
+        /*SceneController sceneController = SceneController.getInstance();
+
+        breadcrumbsContainer.getChildren().add();*/
     }
 }
