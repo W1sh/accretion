@@ -117,7 +117,7 @@
                 </TableView>
             </children>
         </AnchorPane>
-      <HBox fx:id="breadcrumbsContainer" alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" styleClass="breadcrumb" />
+      <HBox fx:id="breadcrumbsContainer" alignment="CENTER_LEFT" maxHeight="38.0" prefHeight="50.0" prefWidth="200.0" styleClass="breadcrumb" />
     </children>
     <stylesheets>
         <URL value="@dark-theme.css" />

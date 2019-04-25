@@ -5,20 +5,29 @@ import com.jfoenix.controls.JFXSnackbarLayout;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 class SceneController {
+
+    private final String separator = "/home/bruno/IdeaProjects/accretion/src/main/resources/gui/assets/arrow.png";
     private static final Duration DURATION_SHORT = Duration.seconds(2);
     private static final Duration DURATION_LONG = Duration.seconds(5);
     private static SceneController instance = null;
 
-    private Stack<String> breadcrumbs = new Stack<>();
+    private List<String> breadcrumbs = new ArrayList<>();
     private HashMap<String, Initializable> controllerMap = new HashMap<>();
     private HashMap<String, Parent> sceneMap = new HashMap<>();
     private Scene main;
@@ -46,7 +55,14 @@ class SceneController {
     }
 
     void activate(String sceneName){
-        //breadcrumbs.push(sceneName);
+        int indexOfBreadcrumb = breadcrumbs.indexOf(sceneName);
+        if(indexOfBreadcrumb != -1){
+            breadcrumbs = breadcrumbs.subList(0, indexOfBreadcrumb + 1);
+        }else{
+            breadcrumbs.add(sceneName);
+        }
+        if(sceneName.equals("movie_table")) buildBreadcrumbs();
+        System.out.println(breadcrumbs.toString());
         main.setRoot(sceneMap.get(sceneName));
     }
 
@@ -56,5 +72,24 @@ class SceneController {
         jfxSnackbar.fireEvent(new JFXSnackbar.SnackbarEvent(snackbarLayout, DURATION_SHORT, null));
     }
 
+    public void buildBreadcrumbs() {
+        List<Node> nodes = new ArrayList<>();
+        breadcrumbs.forEach(breadcrumb -> {
+            Button button = new Button(breadcrumb);
+            button.setOnMouseClicked(event -> activate(button.getText()));
+            if(breadcrumb.equals("movie_table")) button.setDisable(true);
+            ImageView imageView = new javafx.scene.image.ImageView(new Image(new File(separator).toURI().toString()));
+            imageView.setFitHeight(20);
+            imageView.setFitWidth(20);
+            nodes.add(button);
+            nodes.add(imageView);
+        });
+        MovieTableViewController mtvController = (MovieTableViewController) getController("movie_table");
+        mtvController.getBreadcrumbsContainer().getChildren().clear();
+        nodes.forEach(node -> mtvController.getBreadcrumbsContainer().getChildren().add(node));
+    }
 
+    public List<String> getBreadcrumbs() {
+        return breadcrumbs;
+    }
 }

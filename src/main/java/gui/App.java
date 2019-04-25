@@ -49,6 +49,7 @@ public class App extends Application {
                 if(value.name.equals("main")){
                     Scene scene = new Scene(root);
                     sceneController.setMain(scene);
+                    sceneController.activate("main");
                     primaryStage.setScene(scene);
                     primaryStage.show();
                 }
