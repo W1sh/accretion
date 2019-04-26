@@ -1,4 +1,4 @@
-package gui;
+package gui.controllers;
 
 import com.jfoenix.controls.JFXTextArea;
 import data.Movie;
@@ -25,7 +25,6 @@ public class MovieDetailsViewController implements Initializable {
     @FXML private Label labelProduction;
     @FXML private Label labelBoxOffice;
 
-
     public void showDetails(Movie movie){
         try {
             posterImageView.setFitHeight(270);
@@ -44,7 +43,6 @@ public class MovieDetailsViewController implements Initializable {
         String labelRatingString = movie.getImdbRating() + " (out of " + movie.getImdbVotes() + " votes)";
         labelRating.setText(labelRatingString);
         labelRuntime.setText(movie.getRuntime());
-        labelRating.setText(movie.getImdbRating());
         labelAwards.setText(movie.getAwards());
         String plot = movie.getPlot() + System.lineSeparator() + System.lineSeparator() + "Director: "
                 + movie.getDirector() + System.lineSeparator() + "Writers: " + movie.getWriters()

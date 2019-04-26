@@ -1,4 +1,4 @@
-package gui;
+package gui.controllers;
 
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXSnackbarLayout;
@@ -18,9 +18,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
 
-class SceneController {
+public class SceneController {
 
     private final String separator = "/home/bruno/IdeaProjects/accretion/src/main/resources/gui/assets/arrow.png";
     private static final Duration DURATION_SHORT = Duration.seconds(2);
@@ -34,18 +33,18 @@ class SceneController {
 
     private SceneController(){}
 
-    static SceneController getInstance(){
+    public static SceneController getInstance(){
         if(instance == null){
             instance = new SceneController();
         }
         return instance;
     }
 
-    void setMain(Scene main) {
+    public void setMain(Scene main) {
         this.main = main;
     }
 
-    void add(String sceneName, Parent pane, Initializable controller){
+    public void add(String sceneName, Parent pane, Initializable controller){
         sceneMap.put(sceneName, pane);
         controllerMap.put(sceneName, controller);
     }
@@ -54,7 +53,7 @@ class SceneController {
         return controllerMap.get(sceneName);
     }
 
-    void activate(String sceneName){
+    public void activate(String sceneName){
         int indexOfBreadcrumb = breadcrumbs.indexOf(sceneName);
         if(indexOfBreadcrumb != -1){
             breadcrumbs = breadcrumbs.subList(0, indexOfBreadcrumb + 1);

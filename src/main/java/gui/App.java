@@ -1,5 +1,6 @@
 package gui;
 
+import gui.controllers.SceneController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +26,14 @@ public class App extends Application {
         View(String name, String fxml){
             this.name = name;
             this.fxml = fxml;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getFxml() {
+            return fxml;
         }
     }
 
