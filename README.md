@@ -5,4 +5,5 @@ Accretion is a software made with Java and using the OMDb API to keep track of w
 ## Libraries Used
 
 * [JFoenix](https://github.com/jfoenixadmin/JFoenix) - JavaFX Material Design Library.
-* [GSon](https://github.com/google/gson) - JSON Library. Used to retrieve information from the API.
+* [Gson](https://github.com/google/gson) - JSON Library. Used to retrieve information from the API.
+* [OMDb API](http://www.omdbapi.com/) - Movie database used for searches.
