@@ -21,7 +21,6 @@ import java.util.List;
 
 public class SceneController {
 
-    private final String separator = "/home/bruno/IdeaProjects/accretion/src/main/resources/gui/assets/arrow.png";
     private static final Duration DURATION_SHORT = Duration.seconds(2);
     private static final Duration DURATION_LONG = Duration.seconds(5);
     private static SceneController instance = null;
@@ -77,11 +76,11 @@ public class SceneController {
             Button button = new Button(breadcrumb);
             button.setOnMouseClicked(event -> activate(button.getText()));
             if(breadcrumb.equals("movie_table")) button.setDisable(true);
-            ImageView imageView = new javafx.scene.image.ImageView(new Image(new File(separator).toURI().toString()));
+            /*ImageView imageView = new javafx.scene.image.ImageView(new Image(new File(separator).toURI().toString()));
             imageView.setFitHeight(20);
             imageView.setFitWidth(20);
             nodes.add(button);
-            nodes.add(imageView);
+            nodes.add(imageView);*/
         });
         MovieTableViewController mtvController = (MovieTableViewController) getController("movie_table");
         mtvController.getBreadcrumbsContainer().getChildren().clear();

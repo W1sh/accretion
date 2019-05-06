@@ -104,7 +104,7 @@
                         <TextField fx:id="searchTextField" onKeyPressed="#fetchPressed" onKeyReleased="#fetchReleased" prefHeight="26.0" prefWidth="205.0" promptText="filter" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
-                <TableView fx:id="entriesTable" layoutY="119.0" prefHeight="400.0" prefWidth="960.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+                <TableView fx:id="entriesTable" layoutY="119.0" prefHeight="400.0" prefWidth="960.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="130.0">
                     <columns>
                         <TableColumn fx:id="colStatus" editable="false" maxWidth="25.0" prefWidth="25.0" resizable="false" sortable="false" styleClass="centered" />
                         <TableColumn fx:id="colName" editable="false" maxWidth="290.0" minWidth="200.0" prefWidth="290.0" text="Name" />

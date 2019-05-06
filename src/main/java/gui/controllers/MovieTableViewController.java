@@ -2,6 +2,7 @@ package gui.controllers;
 
 import data.Movie;
 import data.Status;
+import gui.App;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -59,25 +60,19 @@ public class MovieTableViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        colStatus.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
-                param.getValue().getStatus().toString()));
-        colName.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
-                param.getValue().getTitle() + " (" + param.getValue().getYear() + ")"));
-        colGenre.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
-                param.getValue().getGenres()));
-        colDirector.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
-                param.getValue().getDirector()));
-        colProduction.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
-                param.getValue().getProduction()));
-        colRuntime.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
-                param.getValue().getRuntime()));
-        colRating.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
-                String.valueOf(param.getValue().getImdbRating())));
+        colStatus.setCellValueFactory(this::statusCellValueFactory);
+        colName.setCellValueFactory(this::nameCellValueFactory);
+        colGenre.setCellValueFactory(this::genreCellValueFactory);
+        colDirector.setCellValueFactory(this::directorCellValueFactory);
+        colProduction.setCellValueFactory(this::productionCellValueFactory);
+        colRuntime.setCellValueFactory(this::runtimeCellValueFactory);
+        colRating.setCellValueFactory(this::ratingCellValueFactory);
 
         List<TableColumn> columns = new ArrayList<>(entriesTable.getColumns());
-        for(TableColumn column : columns){
-            alterColumnCellFactory(column);
-        }
+        columns.forEach(this::alterColumnCellFactory);
+
+        updateTable();
+        entriesTable.setPlaceholder(new Label("No movies found."));
     }
 
     @FXML
@@ -96,38 +91,91 @@ public class MovieTableViewController implements Initializable {
 
     void updateTable(){
         entriesTable.getItems().clear();
-        ArrayList<Movie> distinctMovies = (ArrayList<Movie>) movies.stream().
-                filter(distinctByKey(Movie::getTitle)).
-                collect(Collectors.toList());
-        ObservableList<Movie> content = FXCollections.observableList(distinctMovies);
-        entriesTable.getItems().addAll(content);
+        ObservableList<Movie> observableContent = FXCollections.observableList(movies
+                .stream()
+                .filter(distinctByKey(Movie::getTitle))
+                .collect(Collectors.toList()));
+        entriesTable.getItems().addAll(observableContent);
 
         /*System.out.println(content.stream()
                 .mapToInt(item -> Integer.parseInt(item.getImdbVotes().replaceAll(",", "")))
                 .sum());*/
-        entriesLabel.setText(String.valueOf(content.size()));
+        entriesLabel.setText(String.valueOf(observableContent.size()));
         DecimalFormat numberFormat = new DecimalFormat("#.00");
-        OptionalDouble averageScore = content.stream()
+        OptionalDouble averageScore = observableContent.stream()
                 .mapToDouble(a -> Double.parseDouble(a.getImdbRating()))
                 .average();
         scoreLabel.setText(averageScore.isPresent() ?
                 String.valueOf(numberFormat.format(averageScore.getAsDouble())) : "0");
-        completedLabel.setText(String.valueOf(content.stream()
+        completedLabel.setText(String.valueOf(observableContent.stream()
                 .filter(a -> a.getStatus().toString().equals(Status.COMPLETED.toString()))
                 .count()));
-        ongoingLabel.setText(String.valueOf(content.stream()
+        ongoingLabel.setText(String.valueOf(observableContent.stream()
                 .filter(a -> a.getStatus().toString().equals(Status.ONGOING.toString()))
                 .count()));
-        droppedLabel.setText(String.valueOf(content.stream()
+        droppedLabel.setText(String.valueOf(observableContent.stream()
                 .filter(a -> a.getStatus().toString().equals(Status.DROPPED.toString()))
                 .count()));
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
-        String hoursWatched = new DecimalFormat("0.0", symbols).format(content.stream()
+        String hoursWatched = new DecimalFormat("0.0", symbols).format(observableContent.stream()
                 .mapToInt(Movie::numericValueOfRuntime)
                 .sum() / 60.0);
         hoursLabel.setText(hoursWatched);
         entriesTable.refresh();
+    }
+
+    @FXML
+    void loadHome(ActionEvent event) {
+        SceneController.getInstance().activate(App.View.MAIN_VIEW.getName());
+    }
+
+    List<Movie> getMovies() {
+        return movies;
+    }
+
+    HBox getBreadcrumbsContainer() {
+        return breadcrumbsContainer;
+    }
+
+    private ReadOnlyObjectWrapper<String> statusCellValueFactory(
+            TableColumn.CellDataFeatures<Movie, String> param){
+        return new ReadOnlyObjectWrapper<>(param.getValue().getStatus().toString());
+    }
+
+    private ReadOnlyObjectWrapper<String> nameCellValueFactory(
+            TableColumn.CellDataFeatures<Movie, String> param){
+        return new ReadOnlyObjectWrapper<>(param.getValue().getTitle() + " (" + param.getValue().getYear() + ")");
+    }
+
+    private ReadOnlyObjectWrapper<String> genreCellValueFactory(
+            TableColumn.CellDataFeatures<Movie, String> param){
+        return new ReadOnlyObjectWrapper<>(param.getValue().getGenres());
+    }
+
+    private ReadOnlyObjectWrapper<String> directorCellValueFactory(
+            TableColumn.CellDataFeatures<Movie, String> param){
+        return new ReadOnlyObjectWrapper<>(param.getValue().getDirector());
+    }
+
+    private ReadOnlyObjectWrapper<String> productionCellValueFactory(
+            TableColumn.CellDataFeatures<Movie, String> param){
+        return new ReadOnlyObjectWrapper<>(param.getValue().getProduction());
+    }
+
+    private ReadOnlyObjectWrapper<String> runtimeCellValueFactory(
+            TableColumn.CellDataFeatures<Movie, String> param){
+        return new ReadOnlyObjectWrapper<>(param.getValue().getRuntime());
+    }
+
+    private ReadOnlyObjectWrapper<String> ratingCellValueFactory(
+            TableColumn.CellDataFeatures<Movie, String> param){
+        return new ReadOnlyObjectWrapper<>(String.valueOf(param.getValue().getImdbRating()));
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 
     @SuppressWarnings("unchecked")
@@ -162,24 +210,5 @@ public class MovieTableViewController implements Initializable {
                 }
             }
         });
-    }
-
-    @FXML
-    void loadHome(ActionEvent event) {
-        SceneController sceneController = SceneController.getInstance();
-        sceneController.activate("main");
-    }
-
-    public ArrayList<Movie> getMovies() {
-        return movies;
-    }
-
-    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return t -> seen.add(keyExtractor.apply(t));
-    }
-
-    public HBox getBreadcrumbsContainer() {
-        return breadcrumbsContainer;
     }
 }

@@ -1,4 +1,4 @@
-package gui;
+package gui.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -16,6 +16,6 @@ public class Dialog {
         alert.getDialogPane().getStyleClass().add("custom-alert");
         alert.showAndWait()
                 .filter(response -> response == ButtonType.OK)
-                .ifPresent(response -> System.out.println("FeelsOkayMan"));
+                .ifPresent(response -> System.out.println("FeelsOkayMan")); // log
     }
 }

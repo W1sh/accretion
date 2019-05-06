@@ -2,9 +2,6 @@ package data;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-import java.util.Map;
-
 public class Movie {
 
     @SerializedName("Title") private String title;
@@ -240,6 +237,12 @@ public class Movie {
         }else {
             return Integer.parseInt(numericValue);
         }
+    }
+
+    public String getFullPlot(){
+        return getPlot() + System.lineSeparator() + System.lineSeparator() + "Director: "
+                + getDirector() + System.lineSeparator() + "Writers: " + getWriters()
+                + System.lineSeparator() +  "Actors: " + getActors();
     }
 
     @Override

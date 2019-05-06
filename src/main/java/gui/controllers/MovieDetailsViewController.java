@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MovieDetailsViewController implements Initializable {
@@ -34,26 +35,30 @@ public class MovieDetailsViewController implements Initializable {
             e.printStackTrace();
         }
 
-        String labelTitleString = movie.getTitle().trim() + " (" + movie.getYear() + ")";
-        labelTitle.setText(labelTitleString);
-        String labelRatedString = movie.getType().substring(0, 1).toUpperCase() + movie.getType().substring(1)
-                + " - " + movie.getRating();
-        labelRated.setText(labelRatedString);
-        labelReleased.setText(movie.getReleased());
-        String labelRatingString = movie.getImdbRating() + " (out of " + movie.getImdbVotes() + " votes)";
-        labelRating.setText(labelRatingString);
-        labelRuntime.setText(movie.getRuntime());
-        labelAwards.setText(movie.getAwards());
-        String plot = movie.getPlot() + System.lineSeparator() + System.lineSeparator() + "Director: "
-                + movie.getDirector() + System.lineSeparator() + "Writers: " + movie.getWriters()
-                + System.lineSeparator() +  "Actors: " + movie.getActors();
-        plotTextArea.setText(plot);
-        labelProduction.setText(movie.getProduction());
-        labelBoxOffice.setText(movie.getBoxOffice());
+        String labelTitleString = movie.getTitle().isEmpty() || movie.getYear().isEmpty() ?
+                "" : movie.getTitle().trim() + " (" + movie.getYear() + ")";
+        fillLabel(labelTitle, labelTitleString, "No title found");
+        String labelRatedString = movie.getType().isEmpty() || movie.getRating().isEmpty() ?
+                "" : movie.getType().substring(0, 1).toUpperCase() + movie.getType().substring(1)
+                + " - Rated " + movie.getRating();
+        fillLabel(labelRated, labelRatedString, "No rating found");
+        fillLabel(labelReleased, movie.getReleased(), "No release date");
+        String labelRatingString = movie.getImdbRating().isEmpty() || movie.getImdbVotes().isEmpty() ?
+                "" : movie.getImdbRating() + " (out of " + movie.getImdbVotes() + " votes)";
+        fillLabel(labelRating, labelRatingString, "No rating found");
+        fillLabel(labelRuntime, movie.getRuntime(), "No runtime found");
+        fillLabel(labelAwards, movie.getAwards(), "No awards found");
+        fillLabel(labelProduction, movie.getProduction(), "No production found");
+        fillLabel(labelBoxOffice, movie.getBoxOffice(), "No box office information found");
+        plotTextArea.setText(Optional.of(movie.getFullPlot()).filter(str -> !str.isEmpty()).orElse("No plot found"));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+    }
+
+    private void fillLabel(Label label, String toShow, String defaultValue){
+        label.setText(Optional.of(toShow).filter(str -> !str.isEmpty()).orElse(defaultValue));
     }
 }

@@ -55,7 +55,7 @@ public class App extends Application {
                 Parent root = loader.load();
                 Initializable controller = loader.getController();
                 sceneController.add(value.name, root, controller);
-                if(value.name.equals("main")){
+                if("main".equals(value.name)){
                     Scene scene = new Scene(root);
                     sceneController.setMain(scene);
                     sceneController.activate("main");

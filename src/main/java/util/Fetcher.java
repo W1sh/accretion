@@ -4,7 +4,7 @@ import com.google.gson.*;
 import data.Movie;
 import data.Result;
 import data.Status;
-import gui.Dialog;
+import gui.utils.Dialog;
 
 import java.io.*;
 import java.lang.reflect.Type;
