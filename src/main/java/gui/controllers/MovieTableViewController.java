@@ -2,7 +2,7 @@ package gui.controllers;
 
 import data.Movie;
 import data.Status;
-import gui.App;
+import gui.main.App;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;

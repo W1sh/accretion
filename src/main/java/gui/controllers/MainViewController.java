@@ -3,7 +3,7 @@ package gui.controllers;
 import com.jfoenix.controls.JFXSpinner;
 import data.Movie;
 import data.Result;
-import gui.App;
+import gui.main.App;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -40,6 +40,7 @@ public class MainViewController implements Initializable {
     @FXML private GridPane tableLoadingPane;
     @FXML private JFXSpinner tableLoadingSpinner;
 
+    private SceneMediator sceneMediator = SceneMediator.getInstance();
     private final BooleanProperty enterPressed = new SimpleBooleanProperty(false);
 
     @Override
@@ -78,7 +79,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void loadTableView(ActionEvent event) {
-        SceneController.getInstance().activate(App.View.MOVIE_TABLE_VIEW.getName());
+        SceneMediator.getInstance().activateScene(App.View.MOVIE_TABLE_VIEW.getName());
     }
 
     private void setResults(List<Result> results){
@@ -153,19 +154,24 @@ public class MainViewController implements Initializable {
 
     private void addEvent(TableRow<Result> row){
         Result object = row.getItem();
-        SceneController sceneController = SceneController.getInstance();
+        sceneMediator.movieTableRegisterMovie(object.getMovie());
+        sceneMediator.movieTableUpdate();
+        /*SceneController sceneController = SceneController.getInstance();
         MovieTableViewController mtvController = (MovieTableViewController)
                 sceneController.getController(App.View.MOVIE_TABLE_VIEW.getName());
         mtvController.getMovies().add(object.getMovie());
         mtvController.updateTable();
         sceneController.createSnackbar(object.getMovie().getTitle() + " added to the list!", "Undo", null);
-        // TODO: undo add movie to table
+        */// TODO: undo add movie to table
     }
 
     private void getMovieDetails(Movie movie){
+        sceneMediator.activateScene("Movie Details");
+        sceneMediator.movieDetailsShow(movie);
+        /*
         SceneController.getInstance().activate("movie_details");
         MovieDetailsViewController mdvController =
                 (MovieDetailsViewController) SceneController.getInstance().getController("movie_details");
-        mdvController.showDetails(movie);
+        mdvController.showDetails(movie);*/
     }
 }

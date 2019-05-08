@@ -1,6 +1,7 @@
 package gui.utils;
 
 import gui.controllers.SceneController;
+import gui.controllers.SceneMediator;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -12,12 +13,10 @@ import java.util.List;
 
 public class Breadcrumb {
 
-    private String id;
     private String name;
     private List<Node> nodes;
 
-    public Breadcrumb(String id, String name, Boolean disabled) {
-        this.id = id;
+    public Breadcrumb(String name, Boolean disabled) {
         this.name = name;
         buildNodes(disabled);
     }
@@ -26,17 +25,17 @@ public class Breadcrumb {
         this.nodes = new ArrayList<>();
         String separator = "/home/bruno/IdeaProjects/accretion/src/main/resources/gui/assets/arrow.png";
         Button button = new Button(this.name);
-        button.setOnMouseClicked(event -> SceneController.getInstance().activate(this.id));
+        button.setOnMouseClicked(event -> SceneMediator.getInstance().activateScene(this.name));
         button.setDisable(disabled);
-        ImageView imageView = new javafx.scene.image.ImageView(new Image(new File(separator).toURI().toString()));
+        ImageView imageView = new ImageView(new Image(new File(separator).toURI().toString()));
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
         nodes.add(button);
         nodes.add(imageView);
     }
 
-    public String getId() {
-        return id;
+    public void setDisabled(Boolean disabled){
+        this.nodes.get(0).setDisable(disabled);
     }
 
     public String getName() {

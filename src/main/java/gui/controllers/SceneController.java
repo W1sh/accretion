@@ -21,8 +21,8 @@ import java.util.List;
 
 public class SceneController {
 
+    // implement mediator pattern
     private static final Duration DURATION_SHORT = Duration.seconds(2);
-    private static final Duration DURATION_LONG = Duration.seconds(5);
     private static SceneController instance = null;
 
     private List<String> breadcrumbs = new ArrayList<>();
