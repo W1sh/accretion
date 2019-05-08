@@ -1,12 +1,11 @@
 package gui.controllers;
 
 import data.Movie;
-import gui.main.App;
 import gui.utils.Breadcrumb;
+import gui.utils.SceneHelper;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +19,7 @@ public class SceneMediator implements ISceneMediator {
     private MainViewController mainViewController;
     private MovieTableViewController movieTableViewController;
     private MovieDetailsViewController movieDetailsViewController;
+    private SceneHelper helper = new SceneHelper();
     private Scene main;
 
     private SceneMediator(){}
@@ -29,10 +29,6 @@ public class SceneMediator implements ISceneMediator {
             instance = new SceneMediator();
         }
         return instance;
-    }
-
-    public void setMain(Scene main) {
-        this.main = main;
     }
 
     @Override
@@ -60,15 +56,19 @@ public class SceneMediator implements ISceneMediator {
         main.setRoot(scenes.get(sceneName));
     }
 
-    public boolean movieTableRegisterMovie(Movie movie){
+    boolean movieTableRegisterMovie(Movie movie){
         return movieTableViewController.getMovies().add(movie);
     }
 
-    public void movieTableUpdate(){
+    boolean movieTableDeleteMovie(Movie movie){
+        return movieTableViewController.getMovies().remove(movie);
+    }
+
+    void movieTableUpdate(){
         movieTableViewController.updateTable();
     }
 
-    public void movieDetailsShow(Movie movie){
+    void movieDetailsShow(Movie movie){
         movieDetailsViewController.showDetails(movie);
     }
 
@@ -105,4 +105,17 @@ public class SceneMediator implements ISceneMediator {
         }
     }
 
+    public void setMain(Scene main) {
+        this.main = main;
+    }
+
+    public Scene getMain() {
+        return main;
+    }
+
+    SceneHelper getHelper() {
+        return helper;
+    }
 }
+
+

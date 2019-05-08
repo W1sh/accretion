@@ -1,6 +1,5 @@
 package gui.main;
 
-import gui.controllers.SceneController;
 import gui.controllers.SceneMediator;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -46,19 +45,15 @@ public class App extends Application {
             // prepare table
         });
         try {
-            //SceneController sceneController = SceneController.getInstance();
             SceneMediator sceneMediator = SceneMediator.getInstance();
             for (View value : View.values()) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(value.fxml));
                 Parent root = loader.load();
                 Initializable controller = loader.getController();
-                //sceneController.add(value.name, root, controller);
                 sceneMediator.registerScene(value.name, root);
                 sceneMediator.registerController(controller);
                 if("Main".equals(value.name)){
                     Scene scene = new Scene(root);
-                    //sceneController.setMain(scene);
-                    //sceneController.activate("main");
                     sceneMediator.setMain(scene);
                     sceneMediator.activateScene("Main");
                     primaryStage.setScene(scene);

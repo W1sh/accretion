@@ -156,22 +156,16 @@ public class MainViewController implements Initializable {
         Result object = row.getItem();
         sceneMediator.movieTableRegisterMovie(object.getMovie());
         sceneMediator.movieTableUpdate();
-        /*SceneController sceneController = SceneController.getInstance();
-        MovieTableViewController mtvController = (MovieTableViewController)
-                sceneController.getController(App.View.MOVIE_TABLE_VIEW.getName());
-        mtvController.getMovies().add(object.getMovie());
-        mtvController.updateTable();
-        sceneController.createSnackbar(object.getMovie().getTitle() + " added to the list!", "Undo", null);
-        */// TODO: undo add movie to table
+        Runnable runnable = () -> {
+            sceneMediator.movieTableDeleteMovie(object.getMovie());
+            sceneMediator.movieTableUpdate();
+        };
+        String snackMessage = object.getMovie().getTitle() + " added to the list!";
+        sceneMediator.getHelper().createSnackbar(snackMessage, "Undo", runnable);
     }
 
     private void getMovieDetails(Movie movie){
         sceneMediator.activateScene("Movie Details");
         sceneMediator.movieDetailsShow(movie);
-        /*
-        SceneController.getInstance().activate("movie_details");
-        MovieDetailsViewController mdvController =
-                (MovieDetailsViewController) SceneController.getInstance().getController("movie_details");
-        mdvController.showDetails(movie);*/
     }
 }

@@ -1,6 +1,5 @@
 package gui.utils;
 
-import gui.controllers.SceneController;
 import gui.controllers.SceneMediator;
 import javafx.scene.Node;
 import javafx.scene.control.Button;

@@ -51,7 +51,6 @@ public class MovieTableViewController implements Initializable {
     @FXML private TextField searchTextField;
 
     private final BooleanProperty enterPressed = new SimpleBooleanProperty(false);
-
     private ArrayList<Movie> movies;
 
     public MovieTableViewController() {
@@ -127,7 +126,7 @@ public class MovieTableViewController implements Initializable {
 
     @FXML
     void loadHome(ActionEvent event) {
-        SceneController.getInstance().activate(App.View.MAIN_VIEW.getName());
+        SceneMediator.getInstance().activateScene(App.View.MAIN_VIEW.getName());
     }
 
     List<Movie> getMovies() {
