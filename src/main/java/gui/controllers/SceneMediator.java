@@ -2,6 +2,7 @@ package gui.controllers;
 
 import data.Movie;
 import gui.utils.Breadcrumb;
+import gui.utils.Dialog;
 import gui.utils.SceneHelper;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -56,12 +57,12 @@ public class SceneMediator implements ISceneMediator {
         main.setRoot(scenes.get(sceneName));
     }
 
-    boolean movieTableRegisterMovie(Movie movie){
-        return movieTableViewController.getMovies().add(movie);
+    void movieTableRegisterMovie(Movie movie){
+        movieTableViewController.getMovies().add(movie);
     }
 
-    boolean movieTableDeleteMovie(Movie movie){
-        return movieTableViewController.getMovies().remove(movie);
+    void movieTableDeleteMovie(Movie movie){
+        movieTableViewController.getMovies().remove(movie);
     }
 
     void movieTableUpdate(){

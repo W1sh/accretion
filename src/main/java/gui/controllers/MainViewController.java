@@ -1,5 +1,6 @@
 package gui.controllers;
 
+import com.google.common.flogger.FluentLogger;
 import com.jfoenix.controls.JFXSpinner;
 import data.Movie;
 import data.Result;
@@ -30,6 +31,9 @@ import java.util.stream.Collectors;
 
 public class MainViewController implements Initializable {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final SceneMediator sceneMediator = SceneMediator.getInstance();
+
     @FXML private MenuItem menuItemMovieList;
     @FXML private TableView<Result> resultsTable;
     @FXML private TableColumn<Result, ImageView> colPoster;
@@ -40,7 +44,6 @@ public class MainViewController implements Initializable {
     @FXML private GridPane tableLoadingPane;
     @FXML private JFXSpinner tableLoadingSpinner;
 
-    private SceneMediator sceneMediator = SceneMediator.getInstance();
     private final BooleanProperty enterPressed = new SimpleBooleanProperty(false);
 
     @Override
@@ -61,9 +64,11 @@ public class MainViewController implements Initializable {
             tableLoadingPane.setVisible(true);
             tableLoadingSpinner.setVisible(true);
             Executors.newSingleThreadExecutor().submit(() -> {
+                logger.atInfo().log("Request sent for \"" + searchTextField.getText() + "\"");
                 List<Result> results = Fetcher.fetchMovies(searchTextField.getText());
                 resultsTable.getItems().clear();
                 setResults(results);
+                logger.atInfo().log("Request solved");
                 tableLoadingPane.setVisible(false);
                 tableLoadingSpinner.setVisible(false);
             });
